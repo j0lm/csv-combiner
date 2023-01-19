@@ -1,7 +1,7 @@
 import os
 
 def main():
-    os.system("echo running tests... > output.txt")
+    print("running tests...")
     path = "./fixtures"
     file_list = os.listdir(path)
     size = len(file_list)
@@ -11,7 +11,9 @@ def main():
     runnum = 0
     for file in file_list:
         test_files = [file]
-        os.system("python csv-combiner.py ./fixtures/" + file + " > ./output/output" + str(runnum))
+        # run command
+        os.system("python csv-combiner.py ./fixtures/" + file + " > ./output/output" + str(runnum) + ".csv")
+        
         run_test(test_files, runnum)
         runnum = runnum + 1
 
@@ -20,10 +22,14 @@ def main():
     index = 0
     for file in file_list:
         test_files = [file_list[index], file_list[(index + 1) % size]]
+        
+        # create command
         cmd = "python csv-combiner.py"
         for f in test_files:
             cmd = cmd + " ./fixtures/" + f
-        cmd = cmd + " > ./output/output" + str(runnum)
+            
+        #run command
+        cmd = cmd + " > ./output/output" + str(runnum) + ".csv"
         os.system(cmd)
         run_test(test_files, runnum)
         runnum = runnum + 1
@@ -33,11 +39,16 @@ def main():
     index = 0
     for file in file_list:
         test_files = [file_list[index], file_list[(index + 1) % size], file_list[(index + 2) % size]]
+        
+        # create command
         cmd = "python csv-combiner.py"
         for f in test_files:
             cmd = cmd + " ./fixtures/" + f
-        cmd = cmd + " > ./output/output" + str(runnum)
+        cmd = cmd + " > ./output/output" + str(runnum) + ".csv"
+        
+        # run command
         os.system(cmd)
+        
         run_test(test_files, runnum)
         runnum = runnum + 1
         index = index + 1
@@ -45,31 +56,35 @@ def main():
 
 def run_test(file_list, runnum):
     output = open("./output/output" + str(runnum))
-    first = True
+    first_title = True
+    # go through every file to check if program output is correct
     for file in file_list:
         cur_file = open("./fixtures/" + file)
-        
+        first_line = True;
         for line in cur_file:
-            if first:
-                titles = line.strip() + ",\"filename\""
-                output_title = output.readline().strip()
-                if titles != output_title:
-                    print("failed test with files: " + str(file_list))
-                    return
-                first = False
+            # compare first line of output and skip first lines of input files
+            if first_line:
+                if first_title:
+                    titles = line.strip() + ",\"filename\""
+                    output_title = output.readline().strip()
+                    if titles != output_title:
+                        print("failed test with files: " + str(file_list))
+                        return
+                    first_title = False
+                first_line = False
                 continue
-            
-            original_line = line.strip() + ",\"" + file + "\""
-            output_line = output.readline().strip()
-            if original_line != output_line:
-                print("failed test with files: " + str(file_list) + "\toriginal: " + original_line + "\toutput: " + output_line)
-                return
+            else:            
+                original_line = line.strip() + ",\"" + file + "\""
+                output_line = output.readline().strip()
+                if original_line != output_line:
+                    print("failed test with files: " + str(file_list))
+                    print("original: " + original_line)
+                    print("output: " + output_line)
+                    return
         cur_file.close()
     output.close()
     print("passed test with files: " + str(file_list))
-        
-    
-    
+           
 
 if __name__ == "__main__":
     main()
