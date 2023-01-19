@@ -16,8 +16,7 @@ python csv-combiner.py ./fixtures/accessories.csv ./fixtures/clothing.csv ./fixt
 
 ## How to use test program:
 
-To automate the test cases, at least three csv input files must be put in a separate directory
-To run the test program, folloe this format:
+To automate the test cases, at least three csv input files must be put in a separate directory. To run the test program, follow this format:
 
 ```
 python test.py ./directory-containing-input-files
