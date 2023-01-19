@@ -19,7 +19,7 @@ def main(file_paths):
             print(first_line + ",\"filename\"")
             first = False
         else:
-            # make 
+            # check for matching column headings
             new_first_line = file.readline().strip()
             if first_line != new_first_line:
                 print("combining failed, file column headings do not match")
