@@ -1,8 +1,8 @@
-import os
+import os, sys
 
-def main():
+def main(argv):
     print("running tests...")
-    path = "./fixtures"
+    path = str(argv[1])
     file_list = os.listdir(path)
     size = len(file_list)
 
@@ -12,9 +12,9 @@ def main():
     for file in file_list:
         test_files = [file]
         # run command
-        os.system("python csv-combiner.py ./fixtures/" + file + " > ./output/output" + str(runnum) + ".csv")
+        os.system("python csv-combiner.py "+ path + file + " > ./output/output" + str(runnum) + ".csv")
         
-        run_test(test_files, runnum)
+        run_test(test_files, runnum, path)
         runnum = runnum + 1
 
 
@@ -26,12 +26,12 @@ def main():
         # create command
         cmd = "python csv-combiner.py"
         for f in test_files:
-            cmd = cmd + " ./fixtures/" + f
+            cmd = cmd + " " + path + f
             
         #run command
         cmd = cmd + " > ./output/output" + str(runnum) + ".csv"
         os.system(cmd)
-        run_test(test_files, runnum)
+        run_test(test_files, runnum, path)
         runnum = runnum + 1
         index = index + 1
 
@@ -43,23 +43,23 @@ def main():
         # create command
         cmd = "python csv-combiner.py"
         for f in test_files:
-            cmd = cmd + " ./fixtures/" + f
+            cmd = cmd + " " + path + f
         cmd = cmd + " > ./output/output" + str(runnum) + ".csv"
         
         # run command
         os.system(cmd)
         
-        run_test(test_files, runnum)
+        run_test(test_files, runnum, path)
         runnum = runnum + 1
         index = index + 1
     
 
-def run_test(file_list, runnum):
-    output = open("./output/output" + str(runnum))
+def run_test(file_list, runnum, path):
+    output = open("./output/output" + str(runnum) + ".csv")
     first_title = True
     # go through every file to check if program output is correct
     for file in file_list:
-        cur_file = open("./fixtures/" + file)
+        cur_file = open(path + file)
         first_line = True;
         for line in cur_file:
             # compare first line of output and skip first lines of input files
@@ -87,4 +87,4 @@ def run_test(file_list, runnum):
            
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv)
